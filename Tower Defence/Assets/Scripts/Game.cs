@@ -36,10 +36,11 @@ public class Game : MonoBehaviour
         {
             _spawnProgress -= 1f;
             SpawnEnemy();
-            // _spawnSpeed = 0f;
         }
 
         _enemies.GameUpdate();
+        Physics.SyncTransforms();
+        _board.GameUpdate();
     }
 
     private void SpawnEnemy()

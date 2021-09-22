@@ -414,3 +414,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 4
+  _targetingRange: 1.5
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _turret: {fileID: 1437518360221220402}
+  _laserBeam: {fileID: 1437518361996908676}

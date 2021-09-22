@@ -17,12 +17,17 @@ public class Enemy : MonoBehaviour
     private float _directionAngleTo;
     private float _pathOffset;
     private float _speed;
+    
+    public float Scale { get; private set; }
+    public float Health { get; private set; }
 
     public void Initialize(float scale, float pathOffset, float speed)
     {
         _model.localScale = Vector3.one * scale;
         _pathOffset = pathOffset;
         _speed = speed;
+        Scale = scale;
+        Health = 100f * scale;
     }
 
     public void SpawnOn(GameTile tile)
@@ -59,6 +64,12 @@ public class Enemy : MonoBehaviour
 
     public bool GameUpdate()
     {
+        if (Health <= 0)
+        {
+            OriginFactory.Reclaim(this);
+            return false;
+        }
+        
         _progress += Time.deltaTime * _progressFactor;
         while (_progress >= 1f)
         {
@@ -84,6 +95,11 @@ public class Enemy : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Health -= damage;
     }
 
     private void PrepareNextState()

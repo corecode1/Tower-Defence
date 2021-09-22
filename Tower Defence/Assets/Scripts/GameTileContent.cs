@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class GameTileContent : MonoBehaviour
 {
     [SerializeField] private GameTileContentType _type;
@@ -13,6 +14,11 @@ public class GameTileContent : MonoBehaviour
     public void Recycle()
     {
         OriginFactory.Reclaim(this);
+    }
+
+    public virtual void GameUpdate()
+    {
+
     }
 }
 
