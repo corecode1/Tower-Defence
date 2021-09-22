@@ -100,6 +100,6 @@ public class GameTile : MonoBehaviour
         neighbour._nextOnPath = this;
         neighbour.ExitPoint = neighbour.transform.localPosition + direction.GetHalfVector();
         neighbour.PathDirection = direction;
-        return neighbour.Content.Type != GameTileContentType.Wall ? neighbour : null;
+        return neighbour.Content.IsBlockingPath ? null : neighbour;
     }
 }

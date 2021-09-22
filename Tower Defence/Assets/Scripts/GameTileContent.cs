@@ -8,6 +8,7 @@ public class GameTileContent : MonoBehaviour
 
     public GameTileContentType Type => _type;
     public GameTileContentFactory OriginFactory { get; set; }
+    public bool IsBlockingPath => Type == GameTileContentType.Wall || Type == GameTileContentType.Tower;
 
     public void Recycle()
     {
