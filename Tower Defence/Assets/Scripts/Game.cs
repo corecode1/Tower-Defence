@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour
 {
@@ -9,11 +11,22 @@ public class Game : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private GameTileContentFactory _factory;
     [SerializeField] private EnemyFactory _enemyFactory;
+    [SerializeField] private WarFactory _warFactory;
     [SerializeField] private float _spawnSpeed;
 
-    private EnemyCollection _enemies = new EnemyCollection();
+    private GameBehaviourCollection _enemies = new GameBehaviourCollection();
+    private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
     private float _spawnProgress;
+    private TowerType _currentTowerType;
+
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
+
+    private static Game Instance;
+
+    private void OnEnable()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -22,6 +35,15 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _currentTowerType = TowerType.Laser;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _currentTowerType = TowerType.Mortar;
+        }
+        
         if (Input.GetMouseButtonDown(0))
         {
             HandleTouch();
@@ -40,7 +62,8 @@ public class Game : MonoBehaviour
 
         _enemies.GameUpdate();
         Physics.SyncTransforms();
-        _board.GameUpdate();
+        _board.GameUpdate(); 
+        _nonEnemies.GameUpdate();
     }
 
     private void SpawnEnemy()
@@ -58,7 +81,7 @@ public class Game : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                _board.ToggleTower(tile);
+                _board.ToggleTower(tile, _currentTowerType);
             }
             else
             {
@@ -82,5 +105,12 @@ public class Game : MonoBehaviour
                 _board.ToggleSpawnPoint(tile);
             }
         }
+    }
+
+    public static Shell SpawnShell()
+    {
+        Shell shell = Instance._warFactory.Shell;
+        Instance._nonEnemies.Add(shell);
+        return shell;
     }
 }
