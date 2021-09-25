@@ -110,7 +110,14 @@ public class Game : MonoBehaviour
     public static Shell SpawnShell()
     {
         Shell shell = Instance._warFactory.Shell;
-        Instance._nonEnemies.Add(shell);
+        Instance._nonEnemies.Add(shell); 
         return shell;
+    }
+    
+    public static Explosion SpawnExplosion()
+    {
+        Explosion explosion = Instance._warFactory.Explosion;
+        Instance._nonEnemies.Add(explosion); 
+        return explosion;
     }
 }

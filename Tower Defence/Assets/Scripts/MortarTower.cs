@@ -5,7 +5,9 @@ public class MortarTower : Tower
 {
     [SerializeField] [Range(0.5f, 2f)] private float _shotsPerSecond = 1f;
     [SerializeField] private Transform _mortar;
-
+    [SerializeField] [Range(0.5f, 3f)] private float _shellBlastRadius = 1f;
+    [SerializeField] [Range(1f, 100f)] private float _damage;
+    
     public override TowerType Type => TowerType.Mortar;
 
     private float _launchSpeed;
@@ -68,6 +70,6 @@ public class MortarTower : Tower
         _mortar.localRotation = Quaternion.LookRotation(new Vector3(directoin.x, tanTheta, directoin.y));
 
         Vector3 launchVelocity = new Vector3(s * cosTheta * directoin.x, s * sinTheta, s * cosTheta * directoin.y);
-        Game.SpawnShell().Initialize(launchPoint, targetPoint, launchVelocity);
+        Game.SpawnShell().Initialize(launchPoint, targetPoint, launchVelocity, _damage, _shellBlastRadius);
     }
 }
