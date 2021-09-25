@@ -26,6 +26,7 @@ public class Explosion : WarEntity
 
         transform.localPosition = position;
         _scale = 2f * blastRadius;
+        transform.localScale = Vector3.one * _scale * _scaleCurve.Evaluate(0f);
     }
 
     public override bool GameUpdate()

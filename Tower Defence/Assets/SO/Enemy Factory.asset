@@ -22,3 +22,6 @@ MonoBehaviour:
   _speed:
     _min: 0.2
     _max: 1.7953469
+  _small: {fileID: 11400000, guid: 314ddcd245e42924fb2db0715fb38dff, type: 2}
+  _medium: {fileID: 11400000, guid: a4cda6af3e614904789e081f18e43ea9, type: 2}
+  _large: {fileID: 11400000, guid: 935e768cf39310441abb5b6753250b2b, type: 2}

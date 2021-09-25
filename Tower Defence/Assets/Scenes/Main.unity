@@ -158,7 +158,7 @@ MonoBehaviour:
   _factory: {fileID: 11400000, guid: 41b764c600e488545999ac044ce6a197, type: 2}
   _enemyFactory: {fileID: 11400000, guid: 4043b6574e14d11469cabb672705bbfd, type: 2}
   _warFactory: {fileID: 11400000, guid: 52c1171f483bfae4e8abb479b0c946fc, type: 2}
-  _spawnSpeed: 4
+  _scenario: {fileID: 11400000, guid: f953cb6ec912e494e95c35385500d485, type: 2}
 --- !u!4 &388173933
 Transform:
   m_ObjectHideFlags: 0

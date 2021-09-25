@@ -10,27 +10,27 @@ public class Game : MonoBehaviour
     [SerializeField] private GameBoard _board;
     [SerializeField] private Camera _camera;
     [SerializeField] private GameTileContentFactory _factory;
-    [SerializeField] private EnemyFactory _enemyFactory;
     [SerializeField] private WarFactory _warFactory;
-    [SerializeField] private float _spawnSpeed;
+    [SerializeField] private GameScenario _scenario;
 
     private GameBehaviourCollection _enemies = new GameBehaviourCollection();
     private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
-    private float _spawnProgress;
     private TowerType _currentTowerType;
+    private GameScenario.State _actoveScenario;
 
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
 
-    private static Game Instance;
+    private static Game _instance;
 
     private void OnEnable()
     {
-        Instance = this;
+        _instance = this;
     }
 
     private void Start()
     {
         _board.Initialize(_boardSize, _factory);
+        _actoveScenario = _scenario.Begin();
     }
 
     private void Update()
@@ -53,12 +53,7 @@ public class Game : MonoBehaviour
             HandleAlternativeTouch();
         }
 
-        _spawnProgress += _spawnSpeed * Time.deltaTime;
-        while (_spawnProgress >= 1f)
-        {
-            _spawnProgress -= 1f;
-            SpawnEnemy();
-        }
+        _actoveScenario.Progress();
 
         _enemies.GameUpdate();
         Physics.SyncTransforms();
@@ -66,12 +61,12 @@ public class Game : MonoBehaviour
         _nonEnemies.GameUpdate();
     }
 
-    private void SpawnEnemy()
+    public static void SpawnEnemy(EnemyFactory factory, EnemyType type)
     {
-        GameTile spawnPoint = _board.GetSpawnPoint(Random.Range(0, _board.SpawnPointCount));
-        Enemy enemy = _enemyFactory.Get();
+        GameTile spawnPoint = _instance._board.GetSpawnPoint(Random.Range(0, _instance._board.SpawnPointCount));
+        Enemy enemy = factory.Get(type);
         enemy.SpawnOn(spawnPoint);
-        _enemies.Add(enemy);
+        _instance._enemies.Add(enemy);
     }
 
     private void HandleTouch()
@@ -109,15 +104,15 @@ public class Game : MonoBehaviour
 
     public static Shell SpawnShell()
     {
-        Shell shell = Instance._warFactory.Shell;
-        Instance._nonEnemies.Add(shell); 
+        Shell shell = _instance._warFactory.Shell;
+        _instance._nonEnemies.Add(shell); 
         return shell;
     }
     
     public static Explosion SpawnExplosion()
     {
-        Explosion explosion = Instance._warFactory.Explosion;
-        Instance._nonEnemies.Add(explosion); 
+        Explosion explosion = _instance._warFactory.Explosion;
+        _instance._nonEnemies.Add(explosion); 
         return explosion;
     }
 }

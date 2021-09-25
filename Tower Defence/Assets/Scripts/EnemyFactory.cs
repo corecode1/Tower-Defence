@@ -14,16 +14,41 @@ public class EnemyFactory : GameObjectFactory
     [SerializeField] [FloatRangeSlider(0.2f, 5f)]
     private FloatRange _speed = new FloatRange(0f);
 
-    public Enemy Get()
+    [SerializeField] private EnemyConfig _small;
+    [SerializeField] private EnemyConfig _medium;
+    [SerializeField] private EnemyConfig _large;
+
+    public Enemy Get(EnemyType type)
     {
-        Enemy instance = CreateGameObjectInstance(_prefab);
+        EnemyConfig config = GetConfig(type);
+        Enemy instance = CreateGameObjectInstance(config.Prefab);
         instance.OriginFactory = this;
-        instance.Initialize(_scale.RandomValueInRange, _pathOffset.RandomValueInRange, _speed.RandomValueInRange);
+        instance.Initialize(config.Scale.RandomValueInRange,
+            config.PathOffset.RandomValueInRange,
+            config.Speed.RandomValueInRange,
+            config.Health.RandomValueInRange);
+
         return instance;
     }
 
     public void Reclaim(Enemy enemy)
     {
         Destroy(enemy.gameObject);
+    }
+
+    private EnemyConfig GetConfig(EnemyType type)
+    {
+        switch (type)
+        {
+            case EnemyType.Large:
+                return _large;
+            case EnemyType.Medium:
+                return _medium;
+            case EnemyType.Small:
+                return _small;
+        }
+        
+        Debug.LogError($"Couldn't find config for enemy type: {type}");
+        return _medium;
     }
 }
