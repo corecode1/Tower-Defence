@@ -66,7 +66,7 @@ public class Enemy : GameBehaviour
     {
         if (Health <= 0)
         {
-            OriginFactory.Reclaim(this);
+            Recycle();
             return false;
         }
         
@@ -75,7 +75,8 @@ public class Enemy : GameBehaviour
         {
             if (_tileTo == null)
             {
-                OriginFactory.Reclaim(this);
+                Game.EnemyReachedDestination();
+                Recycle();
                 return false;
             }
 
@@ -165,5 +166,10 @@ public class Enemy : GameBehaviour
         _model.localPosition = new Vector3(_pathOffset, 0);
         transform.localPosition = _positionFrom;
         _progressFactor = _speed / (Mathf.PI * Mathf.Max(_pathOffset, 0.2f));
+    }
+
+    public override void Recycle()
+    {
+        OriginFactory.Reclaim(this);
     }
 }

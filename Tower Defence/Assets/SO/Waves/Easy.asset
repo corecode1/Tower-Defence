@@ -15,5 +15,5 @@ MonoBehaviour:
   _sequences:
   - _factory: {fileID: 11400000, guid: 4043b6574e14d11469cabb672705bbfd, type: 2}
     _type: 2
-    _amount: 3
+    _amount: 80
     _coolDown: 1

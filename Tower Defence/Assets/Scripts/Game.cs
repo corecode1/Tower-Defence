@@ -12,15 +12,24 @@ public class Game : MonoBehaviour
     [SerializeField] private GameTileContentFactory _factory;
     [SerializeField] private WarFactory _warFactory;
     [SerializeField] private GameScenario _scenario;
+    [SerializeField] [Range(10, 100)] private int _startingPlayerHealth;
+
+    [SerializeField] [Range(5f, 30f)] private float _prepareTime = 10f;
 
     private GameBehaviourCollection _enemies = new GameBehaviourCollection();
     private GameBehaviourCollection _nonEnemies = new GameBehaviourCollection();
     private TowerType _currentTowerType;
     private GameScenario.State _actoveScenario;
+    private Coroutine _prepareRoutine;
+
+    private int _currentPlayerHealth;
+    private bool _scenarioInProgress;
 
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
 
     private static Game _instance;
+
+    private bool _isPaused;
 
     private void OnEnable()
     {
@@ -30,11 +39,22 @@ public class Game : MonoBehaviour
     private void Start()
     {
         _board.Initialize(_boardSize, _factory);
-        _actoveScenario = _scenario.Begin();
+        BeginNewGame();
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            _isPaused = !_isPaused;
+            Time.timeScale = _isPaused ? 0f : 1f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _actoveScenario = _scenario.Begin();
+        }
+        
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             _currentTowerType = TowerType.Laser;
@@ -53,7 +73,21 @@ public class Game : MonoBehaviour
             HandleAlternativeTouch();
         }
 
-        _actoveScenario.Progress();
+        if (_scenarioInProgress)
+        {
+            if (_currentPlayerHealth <= 0)
+            {
+                Debug.Log("Defeated");
+                BeginNewGame();
+            }
+
+            if (!_actoveScenario.Progress() && _enemies.IsEmpty)
+            {
+                Debug.Log("Victory");
+                BeginNewGame();
+                _actoveScenario.Progress();
+            }
+        }
 
         _enemies.GameUpdate();
         Physics.SyncTransforms();
@@ -114,5 +148,32 @@ public class Game : MonoBehaviour
         Explosion explosion = _instance._warFactory.Explosion;
         _instance._nonEnemies.Add(explosion); 
         return explosion;
+    }
+
+    private void BeginNewGame()
+    {
+        _scenarioInProgress = false;
+        if (_prepareRoutine != null)
+        {
+            StopCoroutine(_prepareRoutine);
+        }
+
+        _enemies.Clear();
+        _nonEnemies.Clear();
+        _board.Clear();
+        _currentPlayerHealth = _startingPlayerHealth;
+        _prepareRoutine = StartCoroutine(PrepareRoutine());
+    }
+
+    public static void EnemyReachedDestination()
+    {
+        _instance._currentPlayerHealth--;
+    }
+
+    private IEnumerator PrepareRoutine()
+    {
+        yield return new WaitForSeconds(_prepareTime);
+        _actoveScenario = _scenario.Begin();
+        _scenarioInProgress = true;
     }
 }

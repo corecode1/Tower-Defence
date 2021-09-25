@@ -268,8 +268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 4
   _targetingRange: 4
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
   _shotsPerSecond: 1
   _mortar: {fileID: 4015675456874785056}
+  _shellBlastRadius: 1
+  _damage: 40.5

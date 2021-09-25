@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GameBehaviourCollection
 {
     private List<GameBehaviour> _behaviours = new List<GameBehaviour>();
+    public bool IsEmpty => _behaviours.Count == 0;
 
     public void Add(GameBehaviour behaviour)
     {
@@ -19,6 +20,14 @@ public class GameBehaviourCollection
             {
                 _behaviours.RemoveAt(i);
             }
+        }
+    }
+
+    public void Clear()
+    {
+        for (var i = 0; i < _behaviours.Count; i++)
+        {
+            _behaviours[i].Recycle();
         }
     }
 }
